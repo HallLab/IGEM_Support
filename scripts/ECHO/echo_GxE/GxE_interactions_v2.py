@@ -1,5 +1,5 @@
 """
-GxE Knowledge Analysis in the ECHO Environment 
+GxE Knowledge Analysis in the ECHO Environment
 ==============================================
 
 VERSION: 2
@@ -86,7 +86,9 @@ def run_interaction_study(args):
         covariates=ls_covariants,
         min_n=100
     )
-    return interaction_study
+    # Reset the index to convert MultiIndex to columns
+    interaction_study = interaction_study.reset_index()
+    return interaction_study.to_dict(orient='split')
 
 
 # START SCRIPT
@@ -173,6 +175,14 @@ num_workers = 12
 with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor: # noqa E501
     results = list(executor.map(run_interaction_study, interaction_args))
 
+result_df_list = [
+    pd.DataFrame(
+        result['data'],
+        columns=result['columns']
+        ) for result in results]
+
+# Concatenate the list of DataFrames into a single DataFrame
+combined_df = pd.concat(result_df_list)
 
 v_time = int(time.time() - v_time_process)
 print(v_time)
