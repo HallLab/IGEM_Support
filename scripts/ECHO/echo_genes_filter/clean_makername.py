@@ -1,12 +1,17 @@
 import os
+from pathlib import Path
 
 # Get the directory where the script is located
-script_directory = os.path.dirname(os.path.abspath(__file__))
-# Define the input directory based on the script's directory
-input_directory = os.path.join(script_directory, "input_files")
-output_directory = os.path.join(script_directory, "output_files")
+root_path = Path(__file__).parents[3]
+data_path = root_path / "IGEM_Support_data" / "scripts" / "ECHO" / "echo_genes_prod" # noqa E501
+
+# Construct the full paths to your input files
+input_directory = os.path.join(data_path, "input_files")
+output_directory = os.path.join(data_path, "output_files")
+
 # List all files in the directory
 input_files = [f for f in os.listdir(input_directory) if f.endswith(".txt")]
+
 
 # Process each input file
 for input_file in input_files:
